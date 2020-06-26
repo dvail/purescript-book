@@ -12,4 +12,4 @@ circleArea :: Number -> Number
 circleArea radius = radius * radius * pi
 
 addE :: String -> Number
-addE stringNum = readFloat(stringNum) + e
+addE stringNum = readFloat stringNum + e
