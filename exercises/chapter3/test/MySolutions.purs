@@ -8,7 +8,7 @@ import Data.Maybe (Maybe)
 
 
 findEntryByStreet :: String -> AddressBook -> Maybe Entry
-findEntryByStreet street book = head (filter filterEntry book)
+findEntryByStreet street = head <<< filter filterEntry
   where
   filterEntry :: Entry -> Boolean
   filterEntry entry = entry.address.street == street
@@ -20,7 +20,7 @@ isInBook firstName lastName = not null <<< filter byName
     byName entry = entry.firstName == firstName || entry.lastName == lastName
 
 removeDuplicates :: AddressBook -> AddressBook
-removeDuplicates book = nubBy namesEqual book
+removeDuplicates = nubBy namesEqual
   where 
     namesEqual :: Entry -> Entry -> Boolean
     namesEqual n1 n2 = n1.firstName == n2.firstName && n1.lastName == n2.lastName 
