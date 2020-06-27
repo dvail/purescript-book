@@ -2,8 +2,10 @@ module Test.MySolutions where
 
 import Prelude
 
-import Data.Array (head, tail, foldl)
+import Data.Array (head, tail, foldl, filter, length, (..))
 import Data.Maybe (Maybe(..), fromMaybe)
+import Control.MonadZero (guard)
+import Test.Examples (factors)
 
 isEven :: Int -> Boolean
 isEven n
@@ -30,3 +32,31 @@ countEven arr = foldl (\e1 e2 -> addIfEven e1 e2) 0 arr
     addIfEven ct elem
       | isEven elem = 1 + ct
       | otherwise = ct
+
+squared :: Array Number -> Array Number
+squared arr = (\n -> n * n) <$> arr
+
+keepNonNegative :: Array Number -> Array Number
+keepNonNegative arr = filter (\n -> n >= 0.0) arr
+
+infix 8 filter as <$?>
+keepNonNegativeRewrite :: Array Number -> Array Number
+keepNonNegativeRewrite arr = (\n -> n >= 0.0) <$?> arr
+
+isPrime :: Int -> Boolean
+isPrime n = factors n == [[1, n]]
+
+cartesianProduct :: forall a. Array a -> Array a -> Array (Array a)
+cartesianProduct a1 a2 = do
+  i <- a1
+  j <- a2
+  pure [i, j]
+
+triples :: Int -> Array (Array Int)
+triples n = do
+  i <- 1..n
+  j <- i..n
+  k <- j..n
+  guard $ i * i + j * j == k * k
+  guard $ i < n && j < n && k < n
+  pure [i, j, k]
