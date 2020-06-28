@@ -2,7 +2,7 @@ module Test.MySolutions where
 
 import Prelude
 
-import Data.Array (head, tail, foldl, filter, length, (..))
+import Data.Array (head, tail, foldl, filter, length, (..), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
 import Control.MonadZero (guard)
 import Test.Examples (factors)
@@ -58,5 +58,14 @@ triples n = do
   j <- i..n
   k <- j..n
   guard $ i * i + j * j == k * k
-  guard $ i < n && j < n && k < n
   pure [i, j, k]
+
+
+factorizations :: Int -> Array Int
+factorizations num = findFactors num 2 []
+  where
+    findFactors :: Int -> Int -> Array Int -> Array Int
+    findFactors n curr factors
+      | n `mod` curr == 0 = findFactors (n / curr) (curr + 1) (curr : factors)
+      | curr >= n = factors
+      | otherwise = findFactors n (curr + 1) factors
