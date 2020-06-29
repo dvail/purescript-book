@@ -2,9 +2,11 @@ module Test.MySolutions where
 
 import Prelude
 
-import Data.Array (head, tail, foldl, filter, length, (..), (:))
-import Data.Maybe (Maybe(..), fromMaybe)
 import Control.MonadZero (guard)
+import Data.Array (head, null, tail, foldl, foldr, filter, (..), (:))
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Path (Path(File), isDirectory, ls)
+import Data.Tuple (Tuple(..), snd)
 import Test.Examples (factors)
 
 isEven :: Int -> Boolean
@@ -69,3 +71,55 @@ factorizations num = findFactors num 2 []
       | n `mod` curr == 0 = findFactors (n / curr) (curr + 1) (curr : factors)
       | curr >= n = factors
       | otherwise = findFactors n (curr + 1) factors
+
+allTrue :: Array Boolean -> Boolean
+allTrue a = foldl (&&) true a
+
+{- 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 -}
+{- peeking.... -}
+fibTailRec :: Int -> Int
+fibTailRec num = fib' num 0 0 1
+  where
+  fib' :: Int -> Int -> Int -> Int -> Int
+  fib' limit count n1 n2
+    | limit == count = n1 + n2
+    | otherwise = fib' limit (count + 1) (n1 + n2) n1
+
+reverse :: forall a. Array a -> Array a
+reverse = foldl (\xs x -> [x] <> xs) []
+
+onlyFiles :: Path -> Array Path
+onlyFiles path = accumFiles path []
+  where
+    accumFiles :: Path -> Array Path -> Array Path
+    accumFiles path' files 
+      | isDirectory path' = foldr (\p fs -> accumFiles p fs) files (ls path')
+      | otherwise = path' : files
+
+type FileSize = (Tuple String Int)
+
+type LargestSmallest = 
+  { largest :: Maybe FileSize
+  , smallest :: Maybe FileSize
+  }
+
+updateLargestSmallest :: String -> Int -> LargestSmallest -> LargestSmallest
+updateLargestSmallest filename size {largest: l, smallest: s} = 
+  { largest: Just (updateTuple (>) l)
+  , smallest: Just (updateTuple (<) s)
+  }
+  where
+    updateTuple :: (forall a. Ord a => a -> a -> Boolean) -> Maybe FileSize -> FileSize
+    updateTuple comparator Nothing = (Tuple filename size)
+    updateTuple comparator (Just tuple)
+      | size `comparator` snd tuple = (Tuple filename size)
+      | otherwise = tuple
+
+largestSmallest :: Path -> LargestSmallest
+largestSmallest p = largestSmallest' p { largest: Nothing, smallest: Nothing }
+  where 
+    largestSmallest' :: Path -> LargestSmallest -> LargestSmallest
+    largestSmallest' (File name size) lgSm = updateLargestSmallest name size lgSm
+    largestSmallest' path lgSm
+      | null $ ls path = lgSm
+      | otherwise = foldr largestSmallest' lgSm $ ls path

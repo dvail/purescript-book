@@ -4,9 +4,9 @@ import Prelude
 import Test.Examples
 import Test.MySolutions 
 import Data.Array (sort)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Path (filename, root)
-import Data.Tuple (fst)
+import Data.Tuple (Tuple(..), fst)
 import Effect (Effect)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert (assert, assertFalse)
@@ -111,7 +111,6 @@ main =
         test "Test number that uses the prime numbers less than 10" do
           Assert.equal [ 7, 5, 3, 2 ]
             $ factorizations 210
-    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Folds and Tail Recursion" do
       test "Exercise - allTrue" do
         assert "all elements true"
@@ -152,9 +151,16 @@ main =
           $ map filename
           $ onlyFiles root
       test "Exercise - largestSmallest for root" do
-        Assert.equal [ "/home/user/code/js/test.js", "/etc/hosts" ]
-          $ map fst
+        Assert.equal 
+          [ "/home/user/code/js/test.js"
+          , "/etc/hosts" 
+          ]
+          $ (\lgSm -> 
+              [fst $ fromMaybe (Tuple "" 0) lgSm.largest
+              ,fst $ fromMaybe (Tuple "" 0) lgSm.smallest
+              ])
           $ largestSmallest root
+    {-  Move this block comment starting point to enable more tests
       suite "Exercise - whereIs" do
         test "locates a file"
           $ Assert.equal (Just ("/bin/"))
