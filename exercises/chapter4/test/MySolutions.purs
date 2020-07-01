@@ -3,11 +3,14 @@ module Test.MySolutions where
 import Prelude
 
 import Control.MonadZero (guard)
-import Data.Array (head, null, tail, foldl, foldr, filter, (..), (:))
+import Data.Array (head, last, init, null, tail, foldl, foldr, filter, (..), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Path (Path(File), isDirectory, ls)
+import Data.Path (Path(Directory, File), isDirectory, ls, filename)
+import Data.String (Pattern(..), split, joinWith, stripSuffix)
 import Data.Tuple (Tuple(..), snd)
+import Effect.Exception (name)
 import Test.Examples (factors)
+import Test.QuickCheck.Gen (sample)
 
 isEven :: Int -> Boolean
 isEven n
@@ -123,3 +126,19 @@ largestSmallest p = largestSmallest' p { largest: Nothing, smallest: Nothing }
     largestSmallest' path lgSm
       | null $ ls path = lgSm
       | otherwise = foldr largestSmallest' lgSm $ ls path
+
+-- | NOTE - this does not account for a duplicate names throughout the fs
+whereIs :: Path -> String -> Maybe String
+whereIs (File name _) search = stripSuffix (Pattern search) name
+whereIs path search = whereIsWithResult path Nothing
+  where
+    whereIsWithResult subpath (Just r) = Just $ filename subpath
+    whereIsWithResult subpath Nothing = foldr (\p r -> case r of 
+      Just result -> Just result
+      -- | TODO ensure the search stops once the file is found
+      _ -> whereIs p search
+    ) Nothing $ ls subpath
+
+whereIsDo :: Path -> String -> Maybe String
+whereIsDo path search = Just search
+-- | TODO impl
