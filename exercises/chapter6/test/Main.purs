@@ -1,7 +1,7 @@
 module Test.Main where
 
 import Prelude
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+import Test.MySolutions  -- Note to reader: Delete this line
 import Data.Foldable (foldMap, foldl, foldr)
 import Data.Hashable (hash)
 import Data.List (List(..), (:))
@@ -38,6 +38,7 @@ Note to reader: Delete this line to expand comment block -}
           Assert.expectFailure "should not be equal"
             $ Assert.equal (Complex { real: 5.0, imaginary: 2.0 })
             $ Complex { real: 1.0, imaginary: 2.0 }
+{- Note to reader: Delete this line to expand comment block
     suite "Exercise Group - Constraints and Dependencies" do
       suite "Exercise - Eq for NonEmpty" do
         test "NonEmpty equals" do
@@ -187,7 +188,6 @@ Note to reader: Delete this line to expand comment block -}
             $ hash
             $ Hour 14
 
-{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =
