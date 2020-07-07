@@ -47,7 +47,6 @@ Note to reader: Delete this line to expand comment block -}
           Assert.expectFailure "should not be equal"
             $ Assert.equal (NonEmpty 1 [ 2, 3 ])
             $ NonEmpty 2 [ 2, 3 ]
-{- Note to reader: Delete this line to expand comment block
       suite "Exercise - Semigroup for NonEmpty" do
         test "NonEmpty append" do
           Assert.equal (NonEmpty 1 [ 2, 3, 4, 5, 6 ])
@@ -82,6 +81,7 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal LT
             $ compare (Finite 5)
             $ Finite 6
+{- Note to reader: Delete this line to expand comment block
       suite "Exercise - Foldable for NonEmpty" do
         test "NonEmpty foldl" do
           Assert.equal 123

@@ -23,3 +23,19 @@ instance eqNonEmpty :: (Eq a) => Eq (NonEmpty a) where
 
 instance showNonEmpty :: (Show a) => Show (NonEmpty a) where
   show (NonEmpty def a) = show def <> show a
+
+instance semigroupNonEmpty :: Semigroup (NonEmpty a) where
+  append (NonEmpty def1 a1) (NonEmpty def2 a2) = (NonEmpty def1 $ a1 <> [def2] <> a2)
+
+instance functorNonEmpty :: Functor NonEmpty where
+  map f (NonEmpty def a) = NonEmpty (f def) (f <$> a)
+  
+data Extended a = Finite a | Infinite
+
+derive instance eqExtended :: (Eq a) => Eq (Extended a)
+
+instance ordExtended :: (Ord a) => Ord (Extended a) where
+  compare Infinite Infinite = EQ
+  compare _ Infinite = LT
+  compare Infinite _ = GT
+  compare (Finite a1) (Finite a2) = compare a1 a2
