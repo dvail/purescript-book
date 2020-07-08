@@ -3,7 +3,7 @@ module Test.MySolutions where
 import Data.Foldable
 import Prelude
 
-import Data.Array (cons, foldMap, foldl, foldr)
+import Data.Array (cons)
 
 -- Note to reader: Add your solutions to this file
 
@@ -48,3 +48,9 @@ instance foldableNonEmpty :: Foldable NonEmpty where
   foldr fn acc (NonEmpty def arr) = foldr fn acc $ cons def arr
   foldMap fn (NonEmpty def arr) = foldMap fn $ cons def arr
 
+data OneMore f a = OneMore a (f a)
+
+instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
+  foldl fn acc (OneMore a foldable) = foldl fn (fn acc a) foldable
+  foldr fn acc (OneMore a foldable) = fn a (foldr fn acc foldable)
+  foldMap fn (OneMore a foldable) = fn a <> foldMap fn foldable
