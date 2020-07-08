@@ -112,23 +112,11 @@ Note to reader: Delete this line to expand comment block -}
         Assert.equal 42
           $ unsafePartial
           $ unsafeMaximum [ 1, 2, 42, 3 ]
-{- Note to reader: Delete this line to expand comment block
       let
         m1 = Multiply 3
 
         m2 = Multiply 4
       suite "Exercise - Action Class - repeatAction instance" do
-        -- Getting Multiply Int to work is a warm-up
-        suite "Multiply Int" do
-          let
-            a = 5
-          test "Multiply Int mempty" do
-            Assert.equal a
-              $ act (mempty :: Multiply) a
-          test "Multiply Int append" do
-            Assert.equal (act m1 (act m2 a))
-              $ act (m1 <> m2) a
-        -- Multiply String is the actual exercise question
         suite "Multiply String" do
           let
             a = "foo"
@@ -138,6 +126,7 @@ Note to reader: Delete this line to expand comment block -}
           test "Multiply String append" do
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
+{- Note to reader: Delete this line to expand comment block
       suite "Exercise - Action Class - actionArray instance" do
         suite "Multiply Array Int" do
           let

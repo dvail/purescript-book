@@ -5,6 +5,7 @@ import Prelude
 
 import Data.Maybe
 import Data.Array (cons)
+import Data.Monoid (power)
 
 -- Note to reader: Add your solutions to this file
 
@@ -65,3 +66,17 @@ unsafeMaximum a = unsafeMax max
   where 
     max = maximum a
     unsafeMax (Just m) = m
+
+class Monoid m <= Action m a where
+  act :: m -> a -> a
+
+newtype Multiply = Multiply Int
+
+instance semigroupMultiply :: Semigroup Multiply where
+  append (Multiply n) (Multiply m) = Multiply (n * m)
+
+instance monoidMultiply :: Monoid Multiply where
+  mempty = Multiply 1
+
+instance repeatAction :: Monoid a => Action Multiply a where
+  act (Multiply m) s = power s m
