@@ -107,12 +107,12 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal "123"
             $ foldMap (\x -> show x)
             $ OneMore 1 (2 : 3 : Nil)
-{- Note to reader: Delete this line to expand comment block
     suite "Exercise Group - More or less than one Type argument" do
       test "Exercise - unsafeMaximum" do
         Assert.equal 42
           $ unsafePartial
           $ unsafeMaximum [ 1, 2, 42, 3 ]
+{- Note to reader: Delete this line to expand comment block
       let
         m1 = Multiply 3
 

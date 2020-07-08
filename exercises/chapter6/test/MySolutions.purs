@@ -3,6 +3,7 @@ module Test.MySolutions where
 import Data.Foldable
 import Prelude
 
+import Data.Maybe
 import Data.Array (cons)
 
 -- Note to reader: Add your solutions to this file
@@ -54,3 +55,13 @@ instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
   foldl fn acc (OneMore a foldable) = foldl fn (fn acc a) foldable
   foldr fn acc (OneMore a foldable) = fn a (foldr fn acc foldable)
   foldMap fn (OneMore a foldable) = fn a <> foldMap fn foldable
+
+unsafeMaximum' :: Partial => Array Int -> Int
+unsafeMaximum' a = case maximum a of
+  Just m -> m
+
+unsafeMaximum :: Partial => Array Int -> Int
+unsafeMaximum a = unsafeMax max
+  where 
+    max = maximum a
+    unsafeMax (Just m) = m
