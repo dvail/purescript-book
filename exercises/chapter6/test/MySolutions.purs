@@ -1,6 +1,9 @@
 module Test.MySolutions where
 
+import Data.Foldable
 import Prelude
+
+import Data.Array (cons, foldMap, foldl, foldr)
 
 -- Note to reader: Add your solutions to this file
 
@@ -39,3 +42,9 @@ instance ordExtended :: (Ord a) => Ord (Extended a) where
   compare _ Infinite = LT
   compare Infinite _ = GT
   compare (Finite a1) (Finite a2) = compare a1 a2
+
+instance foldableNonEmpty :: Foldable NonEmpty where
+  foldl fn acc (NonEmpty def arr) = foldl fn acc $ cons def arr
+  foldr fn acc (NonEmpty def arr) = foldr fn acc $ cons def arr
+  foldMap fn (NonEmpty def arr) = foldMap fn $ cons def arr
+

@@ -81,7 +81,6 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal LT
             $ compare (Finite 5)
             $ Finite 6
-{- Note to reader: Delete this line to expand comment block
       suite "Exercise - Foldable for NonEmpty" do
         test "NonEmpty foldl" do
           Assert.equal 123
@@ -95,6 +94,7 @@ Note to reader: Delete this line to expand comment block -}
           Assert.equal "123"
             $ foldMap (\x -> show x)
             $ NonEmpty 1 [ 2, 3 ]
+{- Note to reader: Delete this line to expand comment block
       suite "Exercise - Foldable for OneMore" do
         test "OneMore foldl" do
           Assert.equal 123
