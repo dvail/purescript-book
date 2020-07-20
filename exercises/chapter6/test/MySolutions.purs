@@ -1,9 +1,9 @@
 module Test.MySolutions where
 
 import Data.Foldable
+import Data.Maybe
 import Prelude
 
-import Data.Maybe
 import Data.Array (cons)
 import Data.Monoid (power)
 
@@ -72,11 +72,45 @@ class Monoid m <= Action m a where
 
 newtype Multiply = Multiply Int
 
+derive instance eqMultiply :: Eq Multiply
+
+instance showMultiply :: Show Multiply where
+  show (Multiply m) = "(Multiply " <> show m <> ")"
+
 instance semigroupMultiply :: Semigroup Multiply where
   append (Multiply n) (Multiply m) = Multiply (n * m)
 
 instance monoidMultiply :: Monoid Multiply where
   mempty = Multiply 1
 
-instance repeatAction :: Monoid a => Action Multiply a where
+instance repeatActionString :: Action Multiply String where
   act (Multiply m) s = power s m
+
+instance repeatActionInt :: Action Multiply Int where
+  act (Multiply m) s = m * s
+
+instance repeatActionArray :: Action m a => Action m (Array a) where
+  act m arr = (\i -> act m i) <$> arr
+
+newtype Self m = Self m
+
+derive instance eqSelf :: Eq m => Eq (Self m)
+
+instance showSelf :: Show m => Show (Self m) where
+  show (Self m) = "(Self " <> show m <> ")"
+
+instance repeatActionSelf :: Monoid m => Action m (Self m) where
+  act m (Self s) = Self (s <> m)
+
+instance semigroupSelf :: Semigroup m => Semigroup (Self m) where
+  append (Self a) (Self b) = Self (a <> b)
+
+instance monoidSelf :: Monoid m => Monoid (Self m) where
+  mempty = Self mempty
+
+instance repeatActionMultSelf :: Action (Self Multiply) Int where
+  act (Self (Multiply m)) s = m * s
+
+{- TODO
+  PR for concrete test examples
+-}

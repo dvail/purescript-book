@@ -117,6 +117,20 @@ Note to reader: Delete this line to expand comment block -}
 
         m2 = Multiply 4
       suite "Exercise - Action Class - repeatAction instance" do
+        -- Getting Multiply Int to work is a warm-up
+        suite "Multiply Int" do
+          let
+            a = 5
+          test "Multiply Int mempty" do
+            Assert.equal a
+              $ act (mempty :: Multiply) a
+          test "Multiply Int append" do
+            Assert.equal (act m1 (act m2 a))
+              $ act (m1 <> m2) a
+          test "Multiply Int append concrete" do
+            Assert.equal 60
+              $ act (m1 <> m2) a
+        -- Multiply String is the actual exercise question
         suite "Multiply String" do
           let
             a = "foo"
@@ -126,7 +140,9 @@ Note to reader: Delete this line to expand comment block -}
           test "Multiply String append" do
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
-{- Note to reader: Delete this line to expand comment block
+          test "Multiply String append concrete" do
+            Assert.equal "foofoofoofoofoofoofoofoofoofoofoofoo"
+              $ act (m1 <> m2) a
       suite "Exercise - Action Class - actionArray instance" do
         suite "Multiply Array Int" do
           let
@@ -137,6 +153,9 @@ Note to reader: Delete this line to expand comment block -}
           test "Multiply Array Int append" do
             Assert.equal (act m1 (act m2 a))
               $ act (m1 <> m2) a
+          test "Multiply Array Int append concrete" do
+            Assert.equal [ 12, 24, 36 ]
+              $ act (m1 <> m2) a
         suite "Multiply Array String" do
           let
             a = [ "foo", "bar", "baz" ]
@@ -145,6 +164,13 @@ Note to reader: Delete this line to expand comment block -}
               $ act (mempty :: Multiply) a
           test "Multiply Array String append" do
             Assert.equal (act m1 (act m2 a))
+              $ act (m1 <> m2) a
+          test "Multiply Array String append concrete" do
+            Assert.equal 
+              [ "foofoofoofoofoofoofoofoofoofoofoofoo"
+              , "barbarbarbarbarbarbarbarbarbarbarbar"
+              , "bazbazbazbazbazbazbazbazbazbazbazbaz"
+              ]
               $ act (m1 <> m2) a
       suite "Exercise - Action Class - actionSelf instance" do
         let
@@ -155,6 +181,10 @@ Note to reader: Delete this line to expand comment block -}
         test "Multiply Self append" do
           Assert.equal (act m1 (act m2 a))
             $ act (m1 <> m2) a
+        test "Multiply Self append concrete" do
+          Assert.equal 72
+            $ act (act (m1 <> m2) a) 2
+{- Note to reader: Delete this line to expand comment block
     suite "Exercise Group - Hashes" do
       suite "Exercise - arrayHasDuplicates" do
         test "No dupe" do
