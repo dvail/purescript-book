@@ -4,7 +4,8 @@ import Data.Foldable
 import Data.Maybe
 import Prelude
 
-import Data.Array (cons)
+import Data.Array (cons, nubByEq, length)
+import Data.Hashable (class Hashable, hashCode, hashEqual)
 import Data.Monoid (power)
 
 -- Note to reader: Add your solutions to this file
@@ -111,6 +112,16 @@ instance monoidSelf :: Monoid m => Monoid (Self m) where
 instance repeatActionMultSelf :: Action (Self Multiply) Int where
   act (Self (Multiply m)) s = m * s
 
-{- TODO
-  PR for concrete test examples
--}
+arrayHasDuplicates :: forall a. Hashable a => Eq a => Array a -> Boolean
+arrayHasDuplicates a = 
+  length a /= (length $ nubByEq hashCheck a)
+  where 
+    hashCheck e1 e2 = hashEqual e1 e2 && e1 == e2
+
+newtype Hour = Hour Int
+
+instance eqHour :: Eq Hour where
+  eq (Hour n) (Hour m) = mod n 12 == mod m 12
+
+instance hashableHour :: Hashable Hour where
+  hash (Hour a) = hashCode $ mod a 12

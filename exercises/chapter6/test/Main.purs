@@ -184,7 +184,6 @@ Note to reader: Delete this line to expand comment block -}
         test "Multiply Self append concrete" do
           Assert.equal 72
             $ act (act (m1 <> m2) a) 2
-{- Note to reader: Delete this line to expand comment block
     suite "Exercise Group - Hashes" do
       suite "Exercise - arrayHasDuplicates" do
         test "No dupe" do
@@ -207,6 +206,7 @@ Note to reader: Delete this line to expand comment block -}
             $ hash
             $ Hour 14
 
+{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =
