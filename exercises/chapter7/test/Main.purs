@@ -154,10 +154,15 @@ Note to reader: Delete this line to expand comment block -}
       let
         leaf :: forall a. a -> Tree a
         leaf x = Branch Leaf x Leaf
+      let
+        intTree :: Tree Int
+        intTree = Branch (Branch (leaf 1) 2 (leaf 3)) 4 (Branch (leaf 5) 6 (leaf 7))
       suite "Exercise - traverse" do
-        let
-          intTree :: Tree Int
-          intTree = Branch (Branch (leaf 1) 2 (leaf 3)) 4 (Branch (leaf 5) 6 (leaf 7))
+        suite "Functor Tree" do
+          test "Functor - map" do
+            Assert.equal 
+              (Branch (Branch (leaf "1") "2" (leaf "3")) "4" (Branch (leaf "5") "6" (leaf "7")))
+              $ map show intTree
         suite "Foldable Tree" do
           test "foldr" do
             Assert.equal "1234567"
