@@ -11,7 +11,7 @@ import Data.Int (fromNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.String.Regex as R
-import Data.Traversable (traverse)
+import Data.Traversable (sequence, traverse)
 import Data.Tuple (snd)
 import Data.Validation.Semigroup (invalid)
 import Effect (Effect)
@@ -174,14 +174,20 @@ Note to reader: Delete this line to expand comment block -}
             Assert.equal "1234567"
               $ foldMap (\x -> show x) intTree
         suite "Maybe side-effect" do
-          test "Just" do
+          test "Just - traverse" do
             Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
               $ traverse fromNumber
               $ Branch (leaf 1.0) 2.0 (leaf 3.0)
-          test "Nothing" do
+          test "Just - sequence" do
+            Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
+              $ sequence $ Branch (leaf $ Just 1) (Just 2) (leaf $ Just 3)
+          test "Nothing - traverse" do
             Assert.equal Nothing
               $ traverse fromNumber
               $ Branch (leaf 1.0) 2.0 (leaf 3.7)
+          test "Nothing - sequence" do
+            Assert.equal Nothing
+              $ sequence $ Branch (leaf $ Nothing) (Just 2) (leaf $ Just 3)
         test "Array side-effect - check traversal order" do
           Assert.equal (1 .. 7)
             $ snd
