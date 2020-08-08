@@ -2,11 +2,11 @@ module Test.Main where
 
 import Prelude
 import Test.MySolutions
-import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
 import Control.Monad.Writer (runWriter, tell)
 import Data.AddressBook (PhoneType(..), address, phoneNumber)
 import Data.Array ((..))
 import Data.Either (Either(..))
+import Data.Foldable (foldl, foldr, foldMap)
 import Data.Int (fromNumber)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
@@ -155,6 +155,19 @@ Note to reader: Delete this line to expand comment block -}
         leaf :: forall a. a -> Tree a
         leaf x = Branch Leaf x Leaf
       suite "Exercise - traverse" do
+        let
+          intTree :: Tree Int
+          intTree = Branch (Branch (leaf 1) 2 (leaf 3)) 4 (Branch (leaf 5) 6 (leaf 7))
+        suite "Foldable Tree" do
+          test "foldr" do
+            Assert.equal "1234567"
+              $ foldr (\x acc -> show x <> acc) "" intTree
+          test "foldl" do
+            Assert.equal "7654321"
+              $ foldl (\acc x -> show x <> acc) "" intTree
+          test "foldMap" do
+            Assert.equal "1234567"
+              $ foldMap (\x -> show x) intTree
         suite "Maybe side-effect" do
           test "Just" do
             Assert.equal (Just $ Branch (leaf 1) 2 (leaf 3))
@@ -182,6 +195,7 @@ Note to reader: Delete this line to expand comment block -}
           $ runWriter
           $ traversePostOrder (\x -> tell [ x ])
           $ Branch (Branch (leaf 1) 3 (leaf 2)) 7 (Branch (leaf 4) 6 (leaf 5))
+{- Note to reader: Delete this line to expand comment block
       suite "Exercise - validatePersonOptionalAddress" do
         let
           examplePerson =
@@ -219,8 +233,6 @@ Note to reader: Delete this line to expand comment block -}
         test "Nothing" do
           Assert.equal Nothing
             $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
-
-{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =
