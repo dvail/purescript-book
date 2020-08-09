@@ -154,7 +154,6 @@ Note to reader: Delete this line to expand comment block -}
       let
         leaf :: forall a. a -> Tree a
         leaf x = Branch Leaf x Leaf
-      let
         intTree :: Tree Int
         intTree = Branch (Branch (leaf 1) 2 (leaf 3)) 4 (Branch (leaf 5) 6 (leaf 7))
       suite "Exercise - traverse" do
@@ -164,13 +163,13 @@ Note to reader: Delete this line to expand comment block -}
               (Branch (Branch (leaf "1") "2" (leaf "3")) "4" (Branch (leaf "5") "6" (leaf "7")))
               $ map show intTree
         suite "Foldable Tree" do
-          test "foldr" do
+          test "Foldable - foldr" do
             Assert.equal "1234567"
               $ foldr (\x acc -> show x <> acc) "" intTree
-          test "foldl" do
+          test "Foldable - foldl" do
             Assert.equal "7654321"
               $ foldl (\acc x -> show x <> acc) "" intTree
-          test "foldMap" do
+          test "Foldable - foldMap" do
             Assert.equal "1234567"
               $ foldMap (\x -> show x) intTree
         suite "Maybe side-effect" do

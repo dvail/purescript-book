@@ -2,7 +2,12 @@ module Test.Main where
 
 import Prelude
 import Test.Examples
+<<<<<<< HEAD
 import Test.MySolutions 
+=======
+import Test.MySolutions
+import Test.NoPeeking.Solutions  -- Note to reader: Delete this line
+>>>>>>> upstream/master
 import Data.Array (sort)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Path (filename, root)
@@ -67,8 +72,10 @@ main =
       test "Exercise - isPrime" do
         assertFalse "0 is not prime"
           $ isPrime 0
-        assert "1 is prime"
+        assertFalse "1 is not prime"
           $ isPrime 1
+        assert "2 is prime"
+          $ isPrime 2
         assertFalse "4 is not prime"
           $ isPrime 4
         assert "997 is prime"
