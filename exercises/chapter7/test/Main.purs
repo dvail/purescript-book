@@ -205,7 +205,6 @@ Note to reader: Delete this line to expand comment block -}
           $ runWriter
           $ traversePostOrder (\x -> tell [ x ])
           $ Branch (Branch (leaf 1) 3 (leaf 2)) 7 (Branch (leaf 4) 6 (leaf 5))
-{- Note to reader: Delete this line to expand comment block
       suite "Exercise - validatePersonOptionalAddress" do
         let
           examplePerson =
@@ -243,6 +242,7 @@ Note to reader: Delete this line to expand comment block -}
         test "Nothing" do
           Assert.equal Nothing
             $ traverseUsingSequence fromNumber [ 1.0, 2.7 ]
+{- Note to reader: Delete this line to expand comment block
 -}
 runChapterExamples :: TestSuite
 runChapterExamples =

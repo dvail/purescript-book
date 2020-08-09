@@ -2,9 +2,10 @@ module Test.MySolutions where
 
 import Prelude
 
+import Control.Applicative (class Applicative)
 import Control.Apply (lift2)
-import Data.AddressBook (Address, address)
-import Data.AddressBook.Validation (Errors, matches, nonEmpty)
+import Data.AddressBook (Address, PhoneNumber, address, person)
+import Data.AddressBook.Validation (Errors, arrayNonEmpty, matches, nonEmpty, validateAddress, validatePhoneNumber)
 import Data.Either (Either(..))
 import Data.Foldable (class Foldable, foldl, foldr, foldMap)
 import Data.Maybe (Maybe(..))
@@ -13,6 +14,7 @@ import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (class Traversable, sequence, traverse)
 import Data.Validation.Semigroup (V(..))
 import Partial.Unsafe (unsafePartial)
+import Test.NoPeeking.Solutions (PersonOptionalAddress, sequenceUsingTraverse)
 
 -- Note to reader: Add your solutions to this file
 addMaybe :: Maybe Int -> Maybe Int -> Maybe Int
@@ -92,17 +94,6 @@ instance traversableTree :: Traversable Tree where
   sequence Leaf = pure Leaf
   sequence (Branch l v r) = Branch <$> sequence l <*> v <*> sequence r
 
-  {- TODO Create a PR for exercise 2.
-  The following naive implementation of `sequence` allows tests to pass:
-
-  sequence :: forall a m t. Applicable a => Traversable t => t (m a) -> m (t a) 
-  sequence Leaf = pure Leaf
-  sequence (Branch l v r) = pure Leaf
-
-  TODO Add test cases for foldl/foldr
-  Additionally I'm not sure that the implementations of foldl and foldr above are correct
-  -}
-
 traversePreOrder :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)
 traversePreOrder _ Leaf = pure Leaf
 traversePreOrder fn (Branch l v r) = ado
@@ -119,18 +110,34 @@ traversePostOrder fn (Branch l v r) = ado
   v2 <- fn v
   in Branch l2 v2 r2
 
-{-
-TODO Figure out how to do this without applicative do notation
--}
+-- Without applicative do
 traversePostOrder' :: forall a m b. Applicative m => (a -> m b) -> Tree a -> m (Tree b)
 traversePostOrder' _ Leaf = pure Leaf
 traversePostOrder' fn (Branch l v r) = 
-  -- Branch <$> traversePostOrder fn l <*> fn v <*> traversePostOrder fn r
-  apply (apply (map Branch $ traversePostOrder' fn l) $ fn v) $ traversePostOrder' fn r
+  branch <$> traversePostOrder' fn l <*> traversePostOrder' fn r <*> fn v
   where
-    mappedBranch :: forall f a2. Functor f => f (Tree a2) -> f (a2 -> Tree a2 -> Tree a2)
-    mappedBranch = map Branch
-    {-
-    mappedBranchWLeftTrav :: forall f a. Functor f => f a -> f (Tree a -> Tree a)
-    mappedBranchWLeftTrav = mappedBranch $ traversePostOrder' fn l
-    -}
+    branch l2 r2 v2 = Branch l2 v2 r2
+
+type PersonOptAddr
+  = { firstName :: String
+    , lastName :: String
+    , homeAddress :: Maybe Address
+    , phones :: Array PhoneNumber
+    }
+
+personOptAddr :: String -> String -> Maybe Address -> Array PhoneNumber -> PersonOptAddr
+personOptAddr f l a p = { firstName: f, lastName: l, homeAddress: a, phones: p }
+
+validatePersonOptionalAddress :: PersonOptAddr -> V Errors PersonOptAddr
+validatePersonOptionalAddress p =
+  personOptAddr <$> (nonEmpty "First Name" p.firstName *> pure p.firstName)
+    <*> (nonEmpty "Last Name" p.lastName *> pure p.lastName)
+    <*> (traverse validateAddress p.homeAddress *> pure p.homeAddress)
+    <*> (arrayNonEmpty "Phone Numbers" p.phones *> traverse validatePhoneNumber p.phones)
+
+
+sequenceUsingTraverse :: forall a m t. Applicative m => Traversable t => t (m a) -> m (t a)
+sequenceUsingTraverse a = traverse identity a
+
+traverseUsingSequence :: forall a b m t. Applicative m => Traversable t => (a -> m b) -> t a -> m (t b)
+traverseUsingSequence fn a = sequence $ fn <$> a 
